@@ -1,28 +1,49 @@
-# Create T3 App
+# Next.js Full-Stack App with PostgreSQL and Minio S3 Using Docker
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## This is the code for the article [Building a Local Development Environment: Running a Next.js Full-Stack App with PostgreSQL and Minio S3 Using Docker](https://dev.to/alexefimenko/building-a-local-development-environment-running-a-nextjs-full-stack-app-with-postgresql-and-minio-s3-using-docker-1e6m)
 
-## What's next? How do I make an app with this?
+### To run the app:
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+1. Clone the repo
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+2. Optionally, create a `.env` file in the root of the project and add necessary secrets, for example:
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+```
+GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET
+```
 
-## Learn More
+2. Run the following command in the root of the project:
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+```bash
+# If you have docker files in the root of the project
+docker-compose up
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+# In our case, we have dockerfile and docker-compose file in the `compose` folder, so we need to run:
+docker-compose -f compose/docker-compose.yml up
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+# --- Optional ---
+# For running the application with secrets ${VARIABLE_NAME} stored in the .env file, we would need to run:
+docker-compose -f compose/docker-compose.yml --env-file .env up
+```
 
-## How do I deploy this?
+3. Open [http://localhost:3000](http://localhost:3000) with your browser to see the Next.js app.
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+4. Open [http://localhost:9000](http://localhost:9000) with your browser to see the Minio S3 UI. Use the following credentials to login:
+
+```
+Username: minio
+Password: miniosecret
+
+```
+
+5. Connect to the PostgreSQL database using the following credentials:
+
+```
+Host: localhost
+Port: 5432
+Database: myapp-db
+Username: postgres
+Password: postgres
+
+```
