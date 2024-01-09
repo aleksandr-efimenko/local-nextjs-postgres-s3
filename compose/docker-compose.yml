@@ -1,6 +1,8 @@
 version: "3.9"
+name: nextjs-postgres-s3minio
 services:
   web:
+    container_name: nextjs
     build:
       context: ../
       dockerfile: compose/web.Dockerfile
@@ -33,6 +35,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
   minio:
+    container_name: s3minio
     image: bitnami/minio:latest
     ports:
       - "9000:9000"
