@@ -11,11 +11,11 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@index([name])
+model File {
+    id           String   @id @default(uuid())
+    bucket       String
+    fileName     String   @unique
+    originalName String
+    createdAt    DateTime @default(now())
+    size         Int
 }
