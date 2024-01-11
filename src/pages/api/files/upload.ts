@@ -77,7 +77,6 @@ function setErrorStatus(
   return { status, resultBody };
 }
 
-/* Don't miss that! */
 export const config = {
   api: {
     bodyParser: false,

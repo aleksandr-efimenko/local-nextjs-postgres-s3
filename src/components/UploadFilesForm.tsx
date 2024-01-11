@@ -1,6 +1,11 @@
 import { useState, useRef } from "react";
+import { LoadSpinner } from "./LoadSpinner";
 
-export function UploadFilesForm() {
+type UploadFilesFormProps = {
+  onUploadSuccess: () => void;
+};
+
+export function UploadFilesForm({ onUploadSuccess }: UploadFilesFormProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const uploadToServer = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -24,7 +29,11 @@ export function UploadFilesForm() {
       status: "ok" | "fail";
       message: string;
     };
-
+    if (body.status === "ok") {
+      onUploadSuccess();
+    } else {
+      alert(body.message);
+    }
     setIsLoading(false);
   };
   return (
@@ -35,23 +44,29 @@ export function UploadFilesForm() {
       <label htmlFor="file" className="text-2xl">
         Upload your file
       </label>
-      <input
-        id="file"
-        type="file"
-        multiple
-        className="rounded-md border bg-gray-100 p-2"
-        required
-        ref={fileInputRef}
-      />
-      <button
-        disabled={isLoading}
-        className="m-2 rounded-md bg-blue-500 px-5 py-2 text-white
+      {isLoading ? (
+        <LoadSpinner />
+      ) : (
+        <div className="flex gap-5 ">
+          <input
+            id="file"
+            type="file"
+            multiple
+            className="rounded-md border bg-gray-100 p-2 py-5"
+            required
+            ref={fileInputRef}
+          />
+          <button
+            disabled={isLoading}
+            className="m-2 rounded-md bg-blue-500 px-5 py-2 text-white
       hover:bg-blue-600 
       disabled:cursor-not-allowed
       disabled:bg-gray-400"
-      >
-        Upload
-      </button>
+          >
+            Upload
+          </button>
+        </div>
+      )}
     </form>
   );
 }
