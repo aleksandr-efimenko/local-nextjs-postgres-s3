@@ -1,8 +1,9 @@
+import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "~/server/db";
 
-const handler = async (req, res) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const files = await db.file.findMany({
-    take: 5,
+    take: 10,
     orderBy: {
       createdAt: "desc",
     },
@@ -13,7 +14,7 @@ const handler = async (req, res) => {
     },
   });
 
-  res.status(200).json(files);
+  return res.status(200).json(files);
 };
 
 export const config = {

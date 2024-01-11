@@ -10,6 +10,11 @@ export default async function handler(
   if (req.method === "DELETE") {
     const { id } = req.query;
 
+    if (!id || typeof id !== "string") {
+      return res.status(400).json({ message: "Missing or invalid id" });
+    }
+
+    // Get the file name in bucket from the database
     const fileObject = await db.file.findUnique({
       where: {
         id,
