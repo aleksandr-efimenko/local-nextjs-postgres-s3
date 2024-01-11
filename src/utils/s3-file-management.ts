@@ -73,3 +73,19 @@ export async function getFileFromBucket({
   }
   return await s3Client.getObject(bucketName, fileName);
 }
+
+export async function deleteFileFromBucket({
+  bucketName,
+  fileName,
+}: {
+  bucketName: string;
+  fileName: string;
+}) {
+  try {
+    await s3Client.removeObject(bucketName, fileName);
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+  return true;
+}
