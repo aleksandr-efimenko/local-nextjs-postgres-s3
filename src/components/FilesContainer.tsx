@@ -33,7 +33,7 @@ export function FilesContainer({ files, fetchFiles }: FilesListProps) {
   return (
     <div className="w-[40rem] overflow-auto">
       <h1 className="text-xl ">
-        Last {files.length} uploaded file{files.length > 1 && "s"}
+        Last {files.length} uploaded file{files.length === 1 ? "" : "s"}
       </h1>
       <ul className="h-96 overflow-auto">
         {files.map((file) => (

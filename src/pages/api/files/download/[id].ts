@@ -5,6 +5,9 @@ import { db } from "~/server/db";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
+  if (typeof id !== "string")
+    return res.status(400).json({ message: "Invalid request" });
+
   const fileObject = await db.file.findUnique({
     where: {
       id,
