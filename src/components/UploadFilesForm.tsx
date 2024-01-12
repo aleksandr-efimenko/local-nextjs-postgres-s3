@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { LoadSpinner } from "./LoadSpinner";
 import Link from "next/link";
 import { validateFiles, createFormData } from "~/utils/fileUploadHelpers";
+import { MAX_FILE_SIZE } from "~/utils/fileUploadHelpers";
 
 type UploadFilesFormProps = {
   onUploadSuccess: () => void;
@@ -49,6 +50,7 @@ export function UploadFilesForm({ onUploadSuccess }: UploadFilesFormProps) {
       <h1 className="text-2xl">
         File upload example using Next.js, MinIO S3, Prisma and PostgreSQL
       </h1>
+      <p className="text-lg">{`Max file size: ${MAX_FILE_SIZE} MB`}</p>
       <Link
         href="https://github.com/aleksandr-efimenko/local-nextjs-postgres-s3"
         className="text-blue-500 hover:text-blue-600 hover:underline"

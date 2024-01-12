@@ -1,5 +1,5 @@
-const MAX_FILE_SIZE = 4;
-const FILE_NUMBER_LIMIT = 10;
+export const MAX_FILE_SIZE = 4;
+export const FILE_NUMBER_LIMIT = 10;
 
 /**
  *
