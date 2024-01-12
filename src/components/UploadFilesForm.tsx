@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { LoadSpinner } from "./LoadSpinner";
+import Link from "next/link";
 
 type UploadFilesFormProps = {
   onUploadSuccess: () => void;
@@ -38,16 +39,22 @@ export function UploadFilesForm({ onUploadSuccess }: UploadFilesFormProps) {
   };
   return (
     <form
-      className="flex flex-col items-center justify-center gap-2"
+      className="flex flex-col items-center justify-center gap-3"
       onSubmit={uploadToServer}
     >
-      <label htmlFor="file" className="text-2xl">
-        Upload your file
-      </label>
+      <h1 className="text-2xl">
+        File upload example using Next.js, MinIO S3, Prisma and PostgreSQL
+      </h1>
+      <Link
+        href="https://github.com/aleksandr-efimenko/local-nextjs-postgres-s3"
+        className="text-blue-500 hover:text-blue-600 hover:underline"
+      >
+        GitHub repo
+      </Link>
       {isLoading ? (
         <LoadSpinner />
       ) : (
-        <div className="flex gap-5 ">
+        <div className="flex h-16 gap-5">
           <input
             id="file"
             type="file"
@@ -59,9 +66,7 @@ export function UploadFilesForm({ onUploadSuccess }: UploadFilesFormProps) {
           <button
             disabled={isLoading}
             className="m-2 rounded-md bg-blue-500 px-5 py-2 text-white
-      hover:bg-blue-600 
-      disabled:cursor-not-allowed
-      disabled:bg-gray-400"
+            hover:bg-blue-600  disabled:cursor-not-allowed disabled:bg-gray-400"
           >
             Upload
           </button>
