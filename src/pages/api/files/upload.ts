@@ -35,30 +35,33 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (files?.length) {
     // Upload files to S3 bucket
-    for (const [_, fileObject] of files) {
-      const file = fs.createReadStream(fileObject?.filepath);
-      try {
-        // generate unique file name
-        const fileName = `${nanoid(4)}-${fileObject?.originalFilename}`;
-        // Save file to S3 bucket
-        await saveFileInBucket({
-          bucketName,
-          fileName,
-          file,
-        });
-        // Save file info to database
-        await db.file.create({
-          data: {
-            bucket: bucketName,
-            fileName,
-            originalName: fileObject?.originalFilename ?? fileName,
-            size: fileObject?.size ?? 0,
-          },
-        });
-      } catch (e) {
-        console.error(e);
-        ({ status, resultBody } = setErrorStatus(status, resultBody));
-      }
+    try {
+      await Promise.all(
+        files.map(async ([_, fileObject]) => {
+          const file = fs.createReadStream(fileObject?.filepath);
+          // generate unique file name
+          const fileName = `${nanoid(4)}-${fileObject?.originalFilename}`;
+          // Save file to S3 bucket and save file info to database concurrently
+          await Promise.all([
+            saveFileInBucket({
+              bucketName,
+              fileName,
+              file,
+            }),
+            db.file.create({
+              data: {
+                bucket: bucketName,
+                fileName,
+                originalName: fileObject?.originalFilename ?? fileName,
+                size: fileObject?.size ?? 0,
+              },
+            }),
+          ]);
+        }),
+      );
+    } catch (e) {
+      console.error(e);
+      ({ status, resultBody } = setErrorStatus(status, resultBody));
     }
   }
 
