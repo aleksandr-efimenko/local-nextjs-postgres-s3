@@ -1,4 +1,4 @@
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_FILE_SIZE = 4;
 const FILE_NUMBER_LIMIT = 10;
 
 /**
@@ -7,8 +7,8 @@ const FILE_NUMBER_LIMIT = 10;
  * @returns true if file size is less than MAX_FILE_SIZE
  */
 export function limitFileSize(file: File) {
-  if (file.size > MAX_FILE_SIZE) {
-    alert(`File ${file.name} is too big. Max file size is 10 MB`);
+  if (file.size > MAX_FILE_SIZE * 1024 * 1024) {
+    alert(`File ${file.name} is too big. Max file size is ${MAX_FILE_SIZE} MB`);
     return false;
   }
   return true;
