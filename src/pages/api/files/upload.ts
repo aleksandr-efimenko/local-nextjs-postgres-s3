@@ -42,21 +42,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           // generate unique file name
           const fileName = `${nanoid(4)}-${fileObject?.originalFilename}`;
           // Save file to S3 bucket and save file info to database concurrently
-          await Promise.all([
-            saveFileInBucket({
-              bucketName,
+          await saveFileInBucket({
+            bucketName,
+            fileName,
+            file,
+          });
+          await db.file.create({
+            data: {
+              bucket: bucketName,
               fileName,
-              file,
-            }),
-            db.file.create({
-              data: {
-                bucket: bucketName,
-                fileName,
-                originalName: fileObject?.originalFilename ?? fileName,
-                size: fileObject?.size ?? 0,
-              },
-            }),
-          ]);
+              originalName: fileObject?.originalFilename ?? fileName,
+              size: fileObject?.size ?? 0,
+            },
+          });
         }),
       );
     } catch (e) {
