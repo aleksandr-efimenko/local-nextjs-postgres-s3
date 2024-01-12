@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { LoadSpinner } from "./LoadSpinner";
 import Link from "next/link";
+import { validateFiles, createFormData } from "~/utils/fileUploadHelpers";
 
 type UploadFilesFormProps = {
   onUploadSuccess: () => void;
@@ -9,19 +10,21 @@ type UploadFilesFormProps = {
 export function UploadFilesForm({ onUploadSuccess }: UploadFilesFormProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
   const uploadToServer = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!fileInputRef.current?.files?.length) {
       alert("Please, select file you want to upload");
       return;
     }
+    const files = Object.values(fileInputRef.current.files);
+    if (!validateFiles(files)) {
+      return;
+    }
+
     setIsLoading(true);
-    const formData = new FormData();
 
-    Object.values(fileInputRef.current.files).forEach((file) => {
-      formData.append("file", file);
-    });
-
+    const formData = createFormData(files);
     const response = await fetch("/api/files/upload", {
       method: "POST",
       body: formData,
@@ -37,6 +40,7 @@ export function UploadFilesForm({ onUploadSuccess }: UploadFilesFormProps) {
     }
     setIsLoading(false);
   };
+
   return (
     <form
       className="flex flex-col items-center justify-center gap-3"
