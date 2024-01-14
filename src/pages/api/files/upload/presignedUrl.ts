@@ -1,20 +1,27 @@
+import { createPresignedUrl } from "~/utils/s3-file-management";
 import type { NextApiRequest, NextApiResponse } from "next";
-import fs from "fs";
-import { IncomingForm, type File } from "formidable";
 import { env } from "~/env";
-import { saveFileInBucket } from "~/utils/s3-file-management";
+import { IncomingForm, type File } from "formidable";
+import { setErrorStatus } from "./smallFiles";
 import { nanoid } from "nanoid";
-import { db } from "~/server/db";
-
-const bucketName = env.S3_BUCKET_NAME;
 
 type ProcessedFiles = Array<[string, File]>;
+export type PresignedUrlProp = {
+  url: string;
+  originalFileName: string;
+  fileNameInBucket: string;
+  fileSize: number;
+};
+
+const bucketName = env.S3_BUCKET_NAME;
+const expiry = 60 * 60 * 24; // 24 hours
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let status = 200,
     resultBody = { status: "ok", message: "Files were uploaded successfully" };
 
-  // Get files from request using formidable
+  const presignedUrls = [] as PresignedUrlProp[];
+
   const files = await new Promise<ProcessedFiles | undefined>(
     (resolve, reject) => {
       const form = new IncomingForm();
@@ -34,26 +41,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   if (files?.length) {
-    // Upload files to S3 bucket
     try {
       await Promise.all(
         files.map(async ([_, fileObject]) => {
-          const file = fs.createReadStream(fileObject?.filepath);
-          // generate unique file name
-          const fileName = `${nanoid(4)}-${fileObject?.originalFilename}`;
-          // Save file to S3 bucket and save file info to database concurrently
-          await saveFileInBucket({
+          const fileName = `${nanoid(5)}-${fileObject?.originalFilename}`;
+
+          const url = await createPresignedUrl({
             bucketName,
             fileName,
-            file,
+            expiry,
           });
-          await db.file.create({
-            data: {
-              bucket: bucketName,
-              fileName,
-              originalName: fileObject?.originalFilename ?? fileName,
-              size: fileObject?.size ?? 0,
-            },
+          presignedUrls.push({
+            fileNameInBucket: fileName,
+            originalFileName: fileObject?.originalFilename ?? fileName,
+            fileSize: fileObject?.size ?? 0,
+            url,
           });
         }),
       );
@@ -63,20 +65,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 
-  res.status(status).json(resultBody);
+  res.status(200).json(presignedUrls);
 };
-
-function setErrorStatus(
-  status: number,
-  resultBody: { status: string; message: string },
-) {
-  status = 500;
-  resultBody = {
-    status: "fail",
-    message: "Upload error",
-  };
-  return { status, resultBody };
-}
 
 export const config = {
   api: {

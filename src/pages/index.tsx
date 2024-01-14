@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { UploadFilesForm } from "~/components/UploadFilesForm";
+import { UploadFilesForm } from "~/components/UploadFilesForm/UploadFilesS3Endpoint";
 import { FilesContainer } from "~/components/FilesContainer";
 import { useState, useEffect } from "react";
 import { type FileProps } from "~/components/FilesContainer";
