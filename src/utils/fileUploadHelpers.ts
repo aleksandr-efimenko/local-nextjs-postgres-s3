@@ -34,6 +34,9 @@ export function validateFiles(
 export const getPresignedUrls = async (files: ShortFileProp[]) => {
   const response = await fetch("/api/files/upload/presignedUrl", {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(files),
   });
   return (await response.json()) as PresignedUrlProp[];
@@ -64,6 +67,9 @@ export const uploadToS3 = async (
 export const saveFileInfoInDB = async (presignedUrls: PresignedUrlProp[]) => {
   return await fetch("/api/files/upload/saveFileInfo", {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(presignedUrls),
   });
 };

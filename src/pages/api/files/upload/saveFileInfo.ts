@@ -12,7 +12,7 @@ export default async function handler(
     return;
   }
 
-  const presignedUrls = JSON.parse(req.body as string) as PresignedUrlProp[];
+  const presignedUrls = req.body as PresignedUrlProp[];
 
   // Get the file name in bucket from the database
   const saveFilesInfo = await db.file.createMany({

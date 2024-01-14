@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import type { FileProps } from "~/utils/types";
 import { db } from "~/server/db";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -14,7 +15,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
 
-  return res.status(200).json(files);
+  const filesWithProps: FileProps[] = files.map((file) => ({
+    id: file.id,
+    originalFileName: file.originalName,
+    fileSize: file.size,
+  }));
+
+  return res.status(200).json(filesWithProps);
 };
 
 export const config = {

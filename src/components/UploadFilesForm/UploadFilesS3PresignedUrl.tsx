@@ -35,6 +35,10 @@ export function UploadFilesForm({ onUploadSuccess }: UploadFilesFormProps) {
     setIsLoading(true);
 
     const presignedUrls = await getPresignedUrls(filesInfo);
+    if (!presignedUrls?.length) {
+      alert("Something went wrong, please try again later");
+      return;
+    }
 
     // upload files to s3 endpoint directly and save file info to db
     await handleUpload(files, presignedUrls, onUploadSuccess);
