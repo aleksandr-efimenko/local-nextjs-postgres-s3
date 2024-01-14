@@ -23,10 +23,6 @@ export default function Home() {
       <Head>
         <title>File Uploads with Next.js, Prisma, and PostgreSQL</title>
         <meta
-          http-equiv="Content-Security-Policy"
-          content="upgrade-insecure-requests"
-        ></meta>
-        <meta
           name="description"
           content="File Uploads with Next.js, Prisma, and PostgreSQL "
         />
