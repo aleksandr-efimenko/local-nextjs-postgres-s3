@@ -18,7 +18,12 @@ export function UploadFilesForm({ onUploadSuccess }: UploadFilesFormProps) {
       return;
     }
     const files = Object.values(fileInputRef.current?.files);
-    if (!validateFiles(files, MAX_FILE_SIZE_NEXTJS_ROUTE)) {
+    const filesInfo = files.map((file) => ({
+      originalFileName: file.name,
+      fileSize: file.size,
+    }));
+
+    if (!validateFiles(filesInfo, MAX_FILE_SIZE_NEXTJS_ROUTE)) {
       return;
     }
 

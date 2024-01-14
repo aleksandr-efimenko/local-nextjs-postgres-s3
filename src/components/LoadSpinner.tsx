@@ -1,6 +1,4 @@
-export type LoadSpinnerProps = {
-  size?: "small" | "medium" | "large";
-};
+import { type LoadSpinnerProps } from "~/utils/types";
 
 export function LoadSpinner({ size = "medium" }: LoadSpinnerProps) {
   const sizeClasses = {

@@ -1,12 +1,12 @@
 import { useState, useRef } from "react";
 import {
   validateFiles,
-  createFormData,
   MAX_FILE_SIZE_S3_ENDPOINT,
   handleUpload,
   getPresignedUrls,
 } from "~/utils/fileUploadHelpers";
 import { UploadFilesFormUI } from "./UploadFilesFormUI";
+import { type ShortFileProp } from "~/utils/types";
 
 type UploadFilesFormProps = {
   onUploadSuccess: () => void;
@@ -24,14 +24,17 @@ export function UploadFilesForm({ onUploadSuccess }: UploadFilesFormProps) {
       return;
     }
     const files = Object.values(fileInputRef.current.files);
-    if (!validateFiles(files, MAX_FILE_SIZE_S3_ENDPOINT)) {
+    const filesInfo: ShortFileProp[] = files.map((file) => ({
+      originalFileName: file.name,
+      fileSize: file.size,
+    }));
+
+    if (!validateFiles(filesInfo, MAX_FILE_SIZE_S3_ENDPOINT)) {
       return;
     }
     setIsLoading(true);
 
-    // create form data to send to server and get presigned urls
-    const formData = createFormData(files);
-    const presignedUrls = await getPresignedUrls(formData);
+    const presignedUrls = await getPresignedUrls(filesInfo);
 
     // upload files to s3 endpoint directly and save file info to db
     await handleUpload(files, presignedUrls, onUploadSuccess);

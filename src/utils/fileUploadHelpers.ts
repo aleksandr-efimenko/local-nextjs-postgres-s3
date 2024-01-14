@@ -1,4 +1,4 @@
-import { type PresignedUrlProp } from "~/pages/api/files/upload/presignedUrl";
+import type { ShortFileProp, PresignedUrlProp } from "./types";
 
 export const MAX_FILE_SIZE_NEXTJS_ROUTE = 4;
 export const MAX_FILE_SIZE_S3_ENDPOINT = 100;
@@ -6,25 +6,16 @@ export const FILE_NUMBER_LIMIT = 10;
 
 /**
  *
- * @param file file to check
- * @returns true if file size is less than MAX_FILE_SIZE
- */
-export function limitFileSize(file: File, maxSizeMB: number) {
-  if (file.size > maxSizeMB * 1024 * 1024) {
-    alert(`File ${file.name} is too big. Max file size is ${maxSizeMB} MB`);
-    return false;
-  }
-  return true;
-}
-
-/**
- *
  * @param files array of files
  * @returns true if all files are valid
  */
-export function validateFiles(files: File[], maxSizeMB: number): boolean {
-  // check if any file is too big
-  const isFileSizeValid = files.every((file) => limitFileSize(file, maxSizeMB));
+export function validateFiles(
+  files: ShortFileProp[],
+  maxSizeMB: number,
+): boolean {
+  // check if all files in total are less than 100 MB
+  const totalFileSize = files.reduce((acc, file) => acc + file.fileSize, 0);
+  const isFileSizeValid = totalFileSize < maxSizeMB * 1024 * 1024;
   if (!isFileSizeValid) return false;
 
   if (files.length > FILE_NUMBER_LIMIT) {
@@ -36,27 +27,14 @@ export function validateFiles(files: File[], maxSizeMB: number): boolean {
 }
 
 /**
- *
- * @param files array of files
- * @returns FormData object
- */
-export function createFormData(files: File[]): FormData {
-  const formData = new FormData();
-  files.forEach((file) => {
-    formData.append("file", file);
-  });
-  return formData;
-}
-
-/**
  * Gets presigned urls for uploading files to S3
  * @param formData form data with files to upload
  * @returns
  */
-export const getPresignedUrls = async (formData: FormData) => {
+export const getPresignedUrls = async (files: ShortFileProp[]) => {
   const response = await fetch("/api/files/upload/presignedUrl", {
     method: "POST",
-    body: formData,
+    body: JSON.stringify(files),
   });
   return (await response.json()) as PresignedUrlProp[];
 };
@@ -143,4 +121,17 @@ export function formatBytes(bytes: number, decimals = 2) {
 
   // return formatted string
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+}
+
+/**
+ *
+ * @param files array of files
+ * @returns FormData object
+ */
+export function createFormData(files: File[]): FormData {
+  const formData = new FormData();
+  files.forEach((file) => {
+    formData.append("file", file);
+  });
+  return formData;
 }

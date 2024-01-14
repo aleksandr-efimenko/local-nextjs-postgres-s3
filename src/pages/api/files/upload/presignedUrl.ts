@@ -1,60 +1,42 @@
-import { createPresignedUrl } from "~/utils/s3-file-management";
 import type { NextApiRequest, NextApiResponse } from "next";
+import type { ShortFileProp, PresignedUrlProp } from "~/utils/types";
+import { createPresignedUrl } from "~/utils/s3-file-management";
 import { env } from "~/env";
-import { IncomingForm, type File } from "formidable";
 import { setErrorStatus } from "./smallFiles";
 import { nanoid } from "nanoid";
-
-type ProcessedFiles = Array<[string, File]>;
-export type PresignedUrlProp = {
-  url: string;
-  originalFileName: string;
-  fileNameInBucket: string;
-  fileSize: number;
-};
 
 const bucketName = env.S3_BUCKET_NAME;
 const expiry = 60 * 60 * 24; // 24 hours
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method !== "POST") {
+    res.status(405).json({ message: "Only POST requests are allowed" });
+    return;
+  }
   let status = 200,
     resultBody = { status: "ok", message: "Files were uploaded successfully" };
 
-  const presignedUrls = [] as PresignedUrlProp[];
+  const files = JSON.parse(req.body as string) as ShortFileProp[];
 
-  const files = await new Promise<ProcessedFiles | undefined>(
-    (resolve, reject) => {
-      const form = new IncomingForm();
-      const files: ProcessedFiles = [];
-      form.on("file", function (field, file) {
-        files.push([field, file]);
-      });
-      form.on("end", () => resolve(files));
-      form.on("error", (err) => reject(err));
-      form.parse(req, () => {
-        //
-      });
-    },
-  ).catch(() => {
-    ({ status, resultBody } = setErrorStatus(status, resultBody));
-    return undefined;
-  });
+  const presignedUrls = [] as PresignedUrlProp[];
 
   if (files?.length) {
     try {
       await Promise.all(
-        files.map(async ([_, fileObject]) => {
-          const fileName = `${nanoid(5)}-${fileObject?.originalFilename}`;
+        files.map(async (file) => {
+          const fileName = `${nanoid(5)}-${file?.originalFileName}`;
 
+          // get presigned url using s3 sdk
           const url = await createPresignedUrl({
             bucketName,
             fileName,
             expiry,
           });
+          // add presigned url to the list
           presignedUrls.push({
             fileNameInBucket: fileName,
-            originalFileName: fileObject?.originalFilename ?? fileName,
-            fileSize: fileObject?.size ?? 0,
+            originalFileName: file.originalFileName,
+            fileSize: file.fileSize,
             url,
           });
         }),

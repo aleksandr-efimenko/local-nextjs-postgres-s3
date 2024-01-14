@@ -1,19 +1,5 @@
+import { type FilesListProps } from "~/utils/types";
 import { FileItem } from "./FileItem";
-
-export type FileProps = {
-  id: string;
-  originalName: string;
-  size: number;
-  isDeleting?: boolean;
-};
-
-export type FilesListProps = {
-  files: FileProps[];
-  fetchFiles: () => Promise<void>;
-  setFiles: (
-    files: FileProps[] | ((files: FileProps[]) => FileProps[]),
-  ) => void;
-};
 
 export function FilesContainer({
   files,

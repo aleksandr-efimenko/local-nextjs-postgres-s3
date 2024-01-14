@@ -1,13 +1,6 @@
-"use client";
 import Link from "next/link";
 import { LoadSpinner } from "../LoadSpinner";
-
-export type UploadFilesFormUIProps = {
-  isLoading: boolean;
-  fileInputRef: React.RefObject<HTMLInputElement>;
-  uploadToServer: (event: React.FormEvent<HTMLFormElement>) => void;
-  maxFileSize: number;
-};
+import { type UploadFilesFormUIProps } from "~/utils/types";
 
 export function UploadFilesFormUI({
   isLoading,

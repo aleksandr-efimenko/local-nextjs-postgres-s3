@@ -1,4 +1,4 @@
-import { type FileProps } from "./FilesContainer";
+import { type FileProps } from "~/utils/types";
 import { LoadSpinner } from "./LoadSpinner";
 import { formatBytes } from "~/utils/fileUploadHelpers";
 
@@ -40,11 +40,11 @@ export function FileItem({ file, fetchFiles, setFiles }: FileItemProps) {
         href={`/api/files/download/${file.id}`}
         className="truncate text-blue-500 hover:text-blue-600 hover:underline  "
       >
-        {file.originalName}
+        {file.originalFileName}
       </a>
 
       <div className=" flex items-center gap-2">
-        <span className="w-32 ">{formatBytes(file.size)}</span>
+        <span className="w-32 ">{formatBytes(file.fileSize)}</span>
 
         <button
           className="flex w-full flex-1 cursor-pointer items-center justify-center

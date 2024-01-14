@@ -1,8 +1,8 @@
 import Head from "next/head";
-import { UploadFilesForm } from "~/components/UploadFilesForm/UploadFilesS3Endpoint";
+import { UploadFilesForm } from "~/components/UploadFilesForm/UploadFilesS3PresignedUrl";
 import { FilesContainer } from "~/components/FilesContainer";
 import { useState, useEffect } from "react";
-import { type FileProps } from "~/components/FilesContainer";
+import { type FileProps } from "~/utils/types";
 
 export default function Home() {
   const [files, setFiles] = useState<FileProps[]>([]);
