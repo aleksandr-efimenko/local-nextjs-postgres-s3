@@ -25,7 +25,7 @@ export function UploadFilesForm({ onUploadSuccess }: UploadFilesFormProps) {
     setIsLoading(true);
 
     const formData = createFormData(files);
-    const response = await fetch("/api/files/upload", {
+    const response = await fetch("/api/files/upload/smallFiles", {
       method: "POST",
       body: formData,
     });
