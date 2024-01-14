@@ -27,6 +27,7 @@ services:
     depends_on:
       - db
       - minio
+    command: sh ./compose/db-push-and-start.sh
   db:
     image: postgres:15.3
     container_name: postgres
