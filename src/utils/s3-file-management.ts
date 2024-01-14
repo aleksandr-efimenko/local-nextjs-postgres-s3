@@ -2,7 +2,7 @@ import * as Minio from "minio";
 import type internal from "stream";
 import { env } from "~/env.js";
 
-const s3Client = new Minio.Client({
+export const s3Client = new Minio.Client({
   endPoint: env.S3_ENDPOINT,
   port: env.S3_PORT ? Number(env.S3_PORT) : undefined,
   accessKey: env.S3_ACCESS_KEY,
@@ -88,4 +88,19 @@ export async function deleteFileFromBucket({
     return false;
   }
   return true;
+}
+
+export async function createPresignedUrl({
+  bucketName,
+  fileName,
+  expiry = 24 * 60 * 60,
+}: {
+  bucketName: string;
+  fileName: string;
+  expiry?: number;
+}) {
+  // Create bucket if it doesn't exist
+  await createBucketIfNotExists(bucketName);
+
+  return await s3Client.presignedPutObject(bucketName, fileName, expiry);
 }
