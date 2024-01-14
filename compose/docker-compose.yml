@@ -14,7 +14,12 @@ services:
       - ../:/app
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/myapp-db?schema=public
-      - S3_ENDPOINT=minio
+      # Be sure kubernetes.docker.internal is added to your hosts file
+      # S3 endpoint might be "minio" but in this case you should add the following to your hosts file:
+      # 127.0.0.1 minio
+      # Or use the IP address of your physical machine, localhost will not work
+      # https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
+      - S3_ENDPOINT=kubernetes.docker.internal
       - S3_PORT=9000
       - S3_ACCESS_KEY=minio
       - S3_SECRET_KEY=miniosecret
