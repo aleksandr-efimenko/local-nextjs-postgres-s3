@@ -10,8 +10,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== "POST") {
-    res.status(405).json({ message: "Only POST requests are allowed" });
+  if (req.method !== "GET") {
+    res.status(405).json({ message: "Only GET requests are allowed" });
   }
 
   const { id } = req.query;

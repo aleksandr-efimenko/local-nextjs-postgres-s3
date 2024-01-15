@@ -23,7 +23,12 @@ export function UploadFilesRoute({ onUploadSuccess }: UploadFilesFormProps) {
       fileSize: file.size,
     }));
 
-    if (!validateFiles(filesInfo, MAX_FILE_SIZE_NEXTJS_ROUTE)) {
+    const filesValidationResult = validateFiles(
+      filesInfo,
+      MAX_FILE_SIZE_NEXTJS_ROUTE,
+    );
+    if (filesValidationResult) {
+      alert(filesValidationResult);
       return;
     }
 

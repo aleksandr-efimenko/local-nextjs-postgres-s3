@@ -31,7 +31,12 @@ export function UploadFilesS3PresignedUrl({
       fileSize: file.size,
     }));
 
-    if (!validateFiles(filesInfo, MAX_FILE_SIZE_S3_ENDPOINT)) {
+    const filesValidationResult = validateFiles(
+      filesInfo,
+      MAX_FILE_SIZE_S3_ENDPOINT,
+    );
+    if (filesValidationResult) {
+      alert(filesValidationResult);
       return;
     }
     setIsLoading(true);
