@@ -19,6 +19,7 @@ export type FilesListProps = {
   setFiles: (
     files: FileProps[] | ((files: FileProps[]) => FileProps[]),
   ) => void;
+  downloadUsingPresignedUrl: boolean;
 };
 
 export type LoadSpinnerProps = {

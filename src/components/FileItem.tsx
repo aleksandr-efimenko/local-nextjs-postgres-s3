@@ -8,9 +8,20 @@ type FileItemProps = {
   setFiles: (
     files: FileProps[] | ((files: FileProps[]) => FileProps[]),
   ) => void;
+  downloadUsingPresignedUrl: boolean;
 };
 
-export function FileItem({ file, fetchFiles, setFiles }: FileItemProps) {
+async function getPresignedUrl(file: FileProps) {
+  const response = await fetch(`/api/files/presignedUrl/${file.id}`);
+  return (await response.json()) as string;
+}
+
+export function FileItem({
+  file,
+  fetchFiles,
+  setFiles,
+  downloadUsingPresignedUrl,
+}: FileItemProps) {
   async function deleteFile(id: string) {
     setFiles((files: FileProps[]) =>
       files.map((file: FileProps) =>
@@ -34,14 +45,23 @@ export function FileItem({ file, fetchFiles, setFiles }: FileItemProps) {
     }
   }
 
+  const downloadFile = async (file: FileProps) => {
+    if (downloadUsingPresignedUrl) {
+      const presignedUrl = await getPresignedUrl(file);
+      window.open(presignedUrl, "_blank");
+    } else {
+      window.open(`/api/files/download/smallFiles/${file.id}`, "_blank");
+    }
+  };
+
   return (
     <li className="relative flex items-center justify-between gap-2 border-b py-2 text-sm">
-      <a
-        href={`/api/files/download/${file.id}`}
+      <button
         className="truncate text-blue-500 hover:text-blue-600 hover:underline  "
+        onClick={() => downloadFile(file)}
       >
         {file.originalFileName}
-      </a>
+      </button>
 
       <div className=" flex items-center gap-2">
         <span className="w-32 ">{formatBytes(file.fileSize)}</span>

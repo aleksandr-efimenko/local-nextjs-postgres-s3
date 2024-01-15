@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { ShortFileProp, PresignedUrlProp } from "~/utils/types";
-import { createPresignedUrl } from "~/utils/s3-file-management";
+import { createPresignedUrlToUpload } from "~/utils/s3-file-management";
 import { env } from "~/env";
 import { nanoid } from "nanoid";
 
 const bucketName = env.S3_BUCKET_NAME;
-const expiry = 60 * 60 * 24; // 24 hours
+const expiry = 60 * 60; // 24 hours
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,7 +31,7 @@ export default async function handler(
         const fileName = `${nanoid(5)}-${file?.originalFileName}`;
 
         // get presigned url using s3 sdk
-        const url = await createPresignedUrl({
+        const url = await createPresignedUrlToUpload({
           bucketName,
           fileName,
           expiry,

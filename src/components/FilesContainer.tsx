@@ -5,6 +5,7 @@ export function FilesContainer({
   files,
   fetchFiles,
   setFiles,
+  downloadUsingPresignedUrl,
 }: FilesListProps) {
   if (files.length === 0) {
     return (
@@ -26,6 +27,7 @@ export function FilesContainer({
             file={file}
             fetchFiles={fetchFiles}
             setFiles={setFiles}
+            downloadUsingPresignedUrl={downloadUsingPresignedUrl}
           />
         ))}
       </ul>

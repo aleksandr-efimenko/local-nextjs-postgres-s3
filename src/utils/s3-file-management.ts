@@ -90,10 +90,10 @@ export async function deleteFileFromBucket({
   return true;
 }
 
-export async function createPresignedUrl({
+export async function createPresignedUrlToUpload({
   bucketName,
   fileName,
-  expiry = 24 * 60 * 60,
+  expiry = 60 * 60, // 1 hour
 }: {
   bucketName: string;
   fileName: string;
@@ -103,4 +103,16 @@ export async function createPresignedUrl({
   await createBucketIfNotExists(bucketName);
 
   return await s3Client.presignedPutObject(bucketName, fileName, expiry);
+}
+
+export async function createPresignedUrlToDownload({
+  bucketName,
+  fileName,
+  expiry = 60 * 60, // 1 hour
+}: {
+  bucketName: string;
+  fileName: string;
+  expiry?: number;
+}) {
+  return await s3Client.presignedGetObject(bucketName, fileName, expiry);
 }

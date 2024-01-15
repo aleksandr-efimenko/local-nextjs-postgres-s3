@@ -1,15 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { deleteFileFromBucket } from "~/utils/s3-file-management";
+import { createPresignedUrlToDownload } from "~/utils/s3-file-management";
 import { db } from "~/server/db";
 import { env } from "~/env";
 
+/**
+ * This route is used to get presigned url for downloading file from S3
+ */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== "DELETE") {
-    res.status(405).json({ message: "Only DELETE requests are allowed" });
+  if (req.method !== "POST") {
+    res.status(405).json({ message: "Only POST requests are allowed" });
   }
+
   const { id } = req.query;
 
   if (!id || typeof id !== "string") {
@@ -30,20 +34,11 @@ export default async function handler(
     return res.status(404).json({ message: "Item not found" });
   }
 
-  await deleteFileFromBucket({
+  // Get presigned url from s3 storage
+  const presignedUrl = await createPresignedUrlToDownload({
     bucketName: env.S3_BUCKET_NAME,
     fileName: fileObject?.fileName,
   });
 
-  const deletedItem = await db.file.delete({
-    where: {
-      id,
-    },
-  });
-
-  if (deletedItem) {
-    res.status(200).json({ message: "Item deleted successfully" });
-  } else {
-    res.status(404).json({ message: "Item not found" });
-  }
+  res.status(200).json(presignedUrl);
 }

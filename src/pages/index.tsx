@@ -1,11 +1,16 @@
 import Head from "next/head";
-import { UploadFilesForm } from "~/components/UploadFilesForm/UploadFilesS3PresignedUrl";
+import { UploadFilesS3PresignedUrl } from "~/components/UploadFilesForm/UploadFilesS3PresignedUrl";
 import { FilesContainer } from "~/components/FilesContainer";
 import { useState, useEffect } from "react";
 import { type FileProps } from "~/utils/types";
+import { UploadFilesRoute } from "~/components/UploadFilesForm/UploadFilesRoute";
+
+export type fileUploadMode = "s3PresignedUrl" | "NextjsAPIEndpoint";
 
 export default function Home() {
   const [files, setFiles] = useState<FileProps[]>([]);
+  const [uploadMode, setUploadMode] =
+    useState<fileUploadMode>("s3PresignedUrl");
 
   const fetchFiles = async () => {
     const response = await fetch("/api/files");
@@ -17,6 +22,12 @@ export default function Home() {
   useEffect(() => {
     fetchFiles().catch(console.error);
   }, []);
+
+  const downloadUsingPresignedUrl = uploadMode === "s3PresignedUrl";
+
+  const handleModeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setUploadMode(event.target.value as fileUploadMode);
+  };
 
   return (
     <>
@@ -30,14 +41,43 @@ export default function Home() {
       </Head>
       <main className="flex min-h-screen items-center justify-center gap-5 font-mono">
         <div className="container flex flex-col gap-5 px-3">
-          <UploadFilesForm onUploadSuccess={fetchFiles} />
+          <ModeSwitchMenu
+            uploadMode={uploadMode}
+            handleModeChange={handleModeChange}
+          />
+          {uploadMode === "s3PresignedUrl" ? (
+            <UploadFilesS3PresignedUrl onUploadSuccess={fetchFiles} />
+          ) : (
+            <UploadFilesRoute onUploadSuccess={fetchFiles} />
+          )}
           <FilesContainer
             files={files}
             fetchFiles={fetchFiles}
             setFiles={setFiles}
+            downloadUsingPresignedUrl={downloadUsingPresignedUrl}
           />
         </div>
       </main>
     </>
+  );
+}
+
+export type ModeSwitchMenuProps = {
+  uploadMode: fileUploadMode;
+  handleModeChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+};
+function ModeSwitchMenu({ uploadMode, handleModeChange }: ModeSwitchMenuProps) {
+  return (
+    <ul className="flex items-center justify-center gap-2">
+      <li>
+        <label htmlFor="uploadMode">Upload Mode:</label>
+      </li>
+      <li>
+        <select id="uploadMode" value={uploadMode} onChange={handleModeChange}>
+          <option value="s3PresignedUrl">S3 Presigned Url</option>
+          <option value="NextjsAPIEndpoint">Next.js API Endpoint</option>
+        </select>
+      </li>
+    </ul>
   );
 }

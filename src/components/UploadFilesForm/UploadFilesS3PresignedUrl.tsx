@@ -12,7 +12,9 @@ type UploadFilesFormProps = {
   onUploadSuccess: () => void;
 };
 
-export function UploadFilesForm({ onUploadSuccess }: UploadFilesFormProps) {
+export function UploadFilesS3PresignedUrl({
+  onUploadSuccess,
+}: UploadFilesFormProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
