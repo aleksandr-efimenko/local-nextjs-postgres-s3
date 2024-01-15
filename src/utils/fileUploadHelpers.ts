@@ -54,7 +54,12 @@ export const uploadToS3 = async (
 ) => {
   const response = await fetch(presignedUrl.url, {
     method: "PUT",
+
     body: file,
+    headers: {
+      "Content-Type": file.type,
+      "Access-Control-Allow-Origin": "*",
+    },
   });
   return response;
 };
