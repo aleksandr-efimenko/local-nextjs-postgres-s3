@@ -47,6 +47,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             fileName,
             file,
           });
+          // save file info to database
           await db.file.create({
             data: {
               bucket: bucketName,
@@ -65,7 +66,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   res.status(status).json(resultBody);
 };
-
+// Set error status and result body if error occurs
 export function setErrorStatus(
   status: number,
   resultBody: { status: string; message: string },
@@ -78,6 +79,7 @@ export function setErrorStatus(
   return { status, resultBody };
 }
 
+// Disable body parser built-in to Next.js to allow formidable to work
 export const config = {
   api: {
     bodyParser: false,

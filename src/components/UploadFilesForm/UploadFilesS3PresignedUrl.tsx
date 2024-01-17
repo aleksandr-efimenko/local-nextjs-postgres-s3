@@ -25,7 +25,9 @@ export function UploadFilesS3PresignedUrl({
       alert("Please, select file you want to upload");
       return;
     }
+    // get File[] from FileList
     const files = Object.values(fileInputRef.current.files);
+    // validate files
     const filesInfo: ShortFileProp[] = files.map((file) => ({
       originalFileName: file.name,
       fileSize: file.size,

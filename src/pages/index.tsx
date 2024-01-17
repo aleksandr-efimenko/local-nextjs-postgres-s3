@@ -19,12 +19,14 @@ export default function Home() {
     setFiles(body.map((file) => ({ ...file, isDeleting: false })));
   };
 
+  // fetch files on the first render
   useEffect(() => {
     fetchFiles().catch(console.error);
   }, []);
 
+  // determine if we should download using presigned url or Nextjs API endpoint
   const downloadUsingPresignedUrl = uploadMode === "s3PresignedUrl";
-
+  // handle mode change between s3PresignedUrl and NextjsAPIEndpoint
   const handleModeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setUploadMode(event.target.value as fileUploadMode);
   };
@@ -73,7 +75,12 @@ function ModeSwitchMenu({ uploadMode, handleModeChange }: ModeSwitchMenuProps) {
         <label htmlFor="uploadMode">Upload Mode:</label>
       </li>
       <li>
-        <select id="uploadMode" value={uploadMode} onChange={handleModeChange}>
+        <select
+          className="rounded-md border-2 border-gray-300"
+          id="uploadMode"
+          value={uploadMode}
+          onChange={handleModeChange}
+        >
           <option value="s3PresignedUrl">S3 Presigned Url</option>
           <option value="NextjsAPIEndpoint">Next.js API Endpoint</option>
         </select>

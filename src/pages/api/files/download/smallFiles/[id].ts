@@ -8,6 +8,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (typeof id !== "string")
     return res.status(400).json({ message: "Invalid request" });
 
+  // get the file name and original name from the database
   const fileObject = await db.file.findUnique({
     where: {
       id,
@@ -20,7 +21,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!fileObject) {
     return res.status(404).json({ message: "Item not found" });
   }
-
+  // get the file from the bucket and pipe it to the response object
   const data = await getFileFromBucket({
     bucketName: env.S3_BUCKET_NAME,
     fileName: fileObject?.fileName,
@@ -29,7 +30,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!data) {
     return res.status(404).json({ message: "Item not found" });
   }
-
+  // set header for download file
   res.setHeader(
     "content-disposition",
     `attachment; filename="${fileObject?.originalName}"`,

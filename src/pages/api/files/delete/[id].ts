@@ -29,12 +29,12 @@ export default async function handler(
   if (!fileObject) {
     return res.status(404).json({ message: "Item not found" });
   }
-
+  // Delete the file from the bucket
   await deleteFileFromBucket({
     bucketName: env.S3_BUCKET_NAME,
     fileName: fileObject?.fileName,
   });
-
+  // Delete the file from the database
   const deletedItem = await db.file.delete({
     where: {
       id,

@@ -30,9 +30,11 @@ export function FileItem({
       ),
     );
     try {
+      // delete file request to the server
       await fetch(`/api/files/delete/${id}`, {
         method: "DELETE",
       });
+      // fetch files after deleting
       await fetchFiles();
     } catch (error) {
       console.error(error);
@@ -46,6 +48,7 @@ export function FileItem({
     }
   }
 
+  // Depending on the upload mode, we either download the file using the presigned url from S3 or the Nextjs API endpoint.
   const downloadFile = async (file: FileProps) => {
     if (downloadUsingPresignedUrl) {
       const presignedUrl = await getPresignedUrl(file);
