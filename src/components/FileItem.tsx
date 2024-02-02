@@ -13,7 +13,6 @@ type FileItemProps = {
 
 async function getPresignedUrl(file: FileProps) {
   const response = await fetch(`/api/files/download/presignedUrl/${file.id}`);
-  console.log(response);
   return (await response.json()) as string;
 }
 
