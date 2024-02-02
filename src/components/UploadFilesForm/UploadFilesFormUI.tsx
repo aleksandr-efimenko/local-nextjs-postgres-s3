@@ -2,6 +2,9 @@ import Link from "next/link";
 import { LoadSpinner } from "../LoadSpinner";
 import { type UploadFilesFormUIProps } from "~/utils/types";
 
+const GIT_HUB_REPO_LINK =
+  "https://github.com/aleksandr-efimenko/local-nextjs-postgres-s3";
+
 export function UploadFilesFormUI({
   isLoading,
   fileInputRef,
@@ -18,7 +21,7 @@ export function UploadFilesFormUI({
       </h1>
       <p className="text-lg">{`Total file(s) size should not exceed ${maxFileSize} MB`}</p>
       <Link
-        href="https://github.com/aleksandr-efimenko/local-nextjs-postgres-s3"
+        href={GIT_HUB_REPO_LINK}
         className="text-blue-500 hover:text-blue-600 hover:underline"
       >
         GitHub repo
