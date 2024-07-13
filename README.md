@@ -19,6 +19,4 @@ You will see something like this:
 
 ![File storage app](https://blog.alexefimenko.com/blog-assets/file-storage-nextjs-postgres-s3/app-screenshot.png)
 
-You can check the live demo of the application [here](http://89.111.169.67). It is shared with the public, so all files are visible to everyone. You can upload, download, and delete any files. Please do not upload any sensitive information.
-
 The application is built with Next.js, PostgreSQL, and Minio S3. It allows you to upload, download, and delete files. The application is built with Docker, so you can run it locally without installing any dependencies.
